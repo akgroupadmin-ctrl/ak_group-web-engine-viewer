@@ -24,7 +24,7 @@ body {
 <script>
 // сцена
 const scene = new THREE.Scene();
-scene.background = new THREE.Color(0x111111);
+scene.background = new THREE.Color(0x0a0a0a);
 
 // камера
 const camera = new THREE.PerspectiveCamera(
@@ -41,22 +41,49 @@ renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
 
 // свет
-const light1 = new THREE.HemisphereLight(0xffffff, 0x444444, 2);
-scene.add(light1);
+const hemiLight = new THREE.HemisphereLight(0xffffff, 0x111111, 1.2);
+scene.add(hemiLight);
 
-const light2 = new THREE.DirectionalLight(0xffffff, 2);
-light2.position.set(5, 5, 5);
-scene.add(light2);
+const keyLight = new THREE.DirectionalLight(0xffffff, 2);
+keyLight.position.set(5, 5, 5);
+scene.add(keyLight);
+
+const fillLight = new THREE.DirectionalLight(0xff0000, 1.5);
+fillLight.position.set(-5, 2, -5);
+scene.add(fillLight);
+
+const redLight = new THREE.PointLight(0xff2a2a, 3, 10);
+redLight.position.set(2, 2, 2);
+scene.add(redLight);
 
 // загрузка модели
 const loader = new THREE.GLTFLoader();
 
-  loader.load(
+ loader.load(
   'https://akgroupadmin-ctrl.github.io/ak_group-web-engine-viewer/turbine__turbofan_engine__jet_engine.glb',
-  
-  function (gltf) {
-    const model = gltf.scene;
 
+  function (gltf) {
+
+    const model = gltf.scene; // ← ВАЖНО
+
+    // 🔴 перекраска
+    model.traverse((child) => {
+      if (child.isMesh && child.material) {
+
+        if (child.material.color && child.material.color.r > 0.6) {
+          child.material.color.set(0xff2a2a);
+        }
+
+        child.material.emissive = new THREE.Color(0x220000);
+        child.material.emissiveIntensity = 0.4;
+      }
+    });
+
+    scene.add(model); // ← не забудь!
+
+  }
+);
+  
     // центрирование
     const box = new THREE.Box3().setFromObject(model);
     const center = new THREE.Vector3();
@@ -80,6 +107,10 @@ const loader = new THREE.GLTFLoader();
 
 // управление
 const controls = new THREE.OrbitControls(camera, renderer.domElement);
+controls.autoRotate = true;
+controls.autoRotateSpeed = 0.8;
+controls.enableDamping = true;
+controls.dampingFactor = 0.05;
 controls.enableDamping = true;
 controls.autoRotate = true;
 controls.autoRotateSpeed = 1;
