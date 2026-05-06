@@ -40,9 +40,12 @@ camera.position.set(0.5, 1.2, 4);
 const renderer = new THREE.WebGLRenderer({ antialias: true });
 renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
+
+// 🔥 ВАЖНО ДЛЯ КРАСИВОГО ЦВЕТА
+renderer.outputEncoding = THREE.sRGBEncoding;
 renderer.toneMapping = THREE.ACESFilmicToneMapping;
 renderer.toneMappingExposure = 1.2;
-  
+
 // ===== СВЕТ =====
 
 // мягкий свет
