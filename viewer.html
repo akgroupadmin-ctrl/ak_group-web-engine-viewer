@@ -57,13 +57,13 @@ scene.add(keyLight);
 // красный заполняющий
 const fillLight = new THREE.DirectionalLight(0xff0000, 1.5);
 fillLight.position.set(-5, 2, -5);
-scene.add(fillLight);
 fillLight.intensity = 0.8;
-redLight.intensity = 1.5;
-  
+scene.add(fillLight);
+
 // акцентный красный
 const redLight = new THREE.PointLight(0xff2a2a, 3, 10);
 redLight.position.set(2, 2, 2);
+redLight.intensity = 1.5;
 scene.add(redLight);
 
 // ===== ЗАГРУЗКА МОДЕЛИ =====
