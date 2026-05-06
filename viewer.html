@@ -8,11 +8,11 @@
 body {
   margin: 0;
   overflow: hidden;
-  background: #111;
+  background: #0a0a0a;
 }
 </style>
 
-<!-- СТАБИЛЬНАЯ ВЕРСИЯ THREE -->
+<!-- Three.js -->
 <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
@@ -22,11 +22,12 @@ body {
 <body>
 
 <script>
-// сцена
+
+// ===== СЦЕНА =====
 const scene = new THREE.Scene();
 scene.background = new THREE.Color(0x0a0a0a);
 
-// камера
+// ===== КАМЕРА =====
 const camera = new THREE.PerspectiveCamera(
   60,
   window.innerWidth / window.innerHeight,
@@ -35,38 +36,43 @@ const camera = new THREE.PerspectiveCamera(
 );
 camera.position.set(0, 1, 5);
 
-// рендер
+// ===== РЕНДЕР =====
 const renderer = new THREE.WebGLRenderer({ antialias: true });
 renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
 
-// свет
+// ===== СВЕТ =====
+
+// мягкий свет
 const hemiLight = new THREE.HemisphereLight(0xffffff, 0x111111, 1.2);
 scene.add(hemiLight);
 
+// основной
 const keyLight = new THREE.DirectionalLight(0xffffff, 2);
 keyLight.position.set(5, 5, 5);
 scene.add(keyLight);
 
+// красный заполняющий
 const fillLight = new THREE.DirectionalLight(0xff0000, 1.5);
 fillLight.position.set(-5, 2, -5);
 scene.add(fillLight);
 
+// акцентный красный
 const redLight = new THREE.PointLight(0xff2a2a, 3, 10);
 redLight.position.set(2, 2, 2);
 scene.add(redLight);
 
-// загрузка модели
+// ===== ЗАГРУЗКА МОДЕЛИ =====
 const loader = new THREE.GLTFLoader();
 
- loader.load(
+loader.load(
   'https://akgroupadmin-ctrl.github.io/ak_group-web-engine-viewer/turbine__turbofan_engine__jet_engine.glb',
 
   function (gltf) {
 
-    const model = gltf.scene; // ← ВАЖНО
+    const model = gltf.scene;
 
-    // 🔴 перекраска
+    // 🎨 перекраска под бренд
     model.traverse((child) => {
       if (child.isMesh && child.material) {
 
@@ -79,18 +85,13 @@ const loader = new THREE.GLTFLoader();
       }
     });
 
-    scene.add(model); // ← не забудь!
-
-  }
-);
-  
-    // центрирование
+    // 📦 центрирование
     const box = new THREE.Box3().setFromObject(model);
     const center = new THREE.Vector3();
     box.getCenter(center);
     model.position.sub(center);
 
-    // масштаб
+    // 📏 масштаб
     model.scale.set(3, 3, 3);
 
     scene.add(model);
@@ -105,17 +106,14 @@ const loader = new THREE.GLTFLoader();
   }
 );
 
-// управление
+// ===== УПРАВЛЕНИЕ =====
 const controls = new THREE.OrbitControls(camera, renderer.domElement);
-controls.autoRotate = true;
-controls.autoRotateSpeed = 0.8;
 controls.enableDamping = true;
 controls.dampingFactor = 0.05;
-controls.enableDamping = true;
 controls.autoRotate = true;
-controls.autoRotateSpeed = 1;
+controls.autoRotateSpeed = 0.8;
 
-// анимация
+// ===== АНИМАЦИЯ =====
 function animate() {
   requestAnimationFrame(animate);
   controls.update();
@@ -123,12 +121,13 @@ function animate() {
 }
 animate();
 
-// адаптация под экран
+// ===== АДАПТИВ =====
 window.addEventListener('resize', function () {
   camera.aspect = window.innerWidth / window.innerHeight;
   camera.updateProjectionMatrix();
   renderer.setSize(window.innerWidth, window.innerHeight);
 });
+
 </script>
 
 </body>
